@@ -60,7 +60,7 @@ public class GhostStateLogic : MonoBehaviour
     {
         m_eaten = true;
         m_animator.SetBool(eatenProperty, true);
-
+        Event<MonsterEatenEvent>.Broadcast(new MonsterEatenEvent());
         changeState();
     }
 

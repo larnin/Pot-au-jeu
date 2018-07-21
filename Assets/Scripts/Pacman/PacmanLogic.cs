@@ -10,14 +10,16 @@ public class PacmanLogic : StartableLogic
 {
     const string horizontalAxis = "Horizontal";
     const string verticalAxis = "Vertical";
+    const string directionParameter = "Direction";
+    const string dieParameter = "Die";
 
     enum Direction
     {
-        None,
-        Up,
-        Down,
-        Left,
-        Right
+        None = 0,
+        Up = 1,
+        Down = 2,
+        Left = 3,
+        Right = 4
     }
 
     [SerializeField] float m_speed = 1;
@@ -27,6 +29,25 @@ public class PacmanLogic : StartableLogic
     Tween m_tween = null;
     Direction m_direction = Direction.None;
     Direction m_currentDirection = Direction.None;
+
+    Animator m_animator;
+
+    bool m_died;
+    bool m_bossDied;
+
+    SubscriberList m_subscriberList = new SubscriberList();
+
+    protected override void onAwake()
+    {
+        m_animator = GetComponent<Animator>();
+        m_subscriberList.Add(new Event<BossDieEvent>.Subscriber(onBossDie));
+        m_subscriberList.Subscribe();
+    }
+
+    private void OnDestroy()
+    {
+        m_subscriberList.Unsubscribe();
+    }
 
     public Vector2Int getDirection()
     {
@@ -83,6 +104,9 @@ public class PacmanLogic : StartableLogic
 
     void startNextMove()
     {
+        if (m_bossDied)
+            return;
+
         if (m_tween != null)
         {
             m_tween.Kill();
@@ -116,6 +140,8 @@ public class PacmanLogic : StartableLogic
 
         m_tween = transform.DOMove(new Vector3(nextX, nextY, transform.position.z), 1 / m_speed * d).SetEase(Ease.Linear).OnComplete(startNextMove);
         m_currentDirection = m_direction;
+
+        m_animator.SetInteger(directionParameter,(int)m_currentDirection);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -143,9 +169,16 @@ public class PacmanLogic : StartableLogic
 
         if (ghost.isVulnerable() && !ghost.isEaten())
             ghost.eat();
-        if(!ghost.isEaten() && !ghost.isVulnerable())
+        if(!ghost.isEaten() && !ghost.isVulnerable() && !m_died)
         {
+            m_animator.SetTrigger(dieParameter);
             Event<DieEvent>.Broadcast(new DieEvent());
+            m_died = true;
         }
+    }
+
+    void onBossDie(BossDieEvent e)
+    {
+        m_bossDied = true;
     }
 }

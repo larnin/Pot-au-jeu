@@ -37,10 +37,19 @@ class GhostLogic : StartableLogic
     Tween m_tween;
     List<Position> m_path = new List<Position>();
     Animator m_animator;
+    bool m_bossDie = false;
+    SubscriberList m_subscriberList = new SubscriberList();
 
     protected override void onAwake()
     {
         m_animator = GetComponent<Animator>();
+        m_subscriberList.Add(new Event<BossDieEvent>.Subscriber(onBossDie));
+        m_subscriberList.Subscribe();
+    }
+
+    protected override void onDestroy()
+    {
+        m_subscriberList.Unsubscribe();
     }
 
     public bool haveFinishedPath()
@@ -133,6 +142,9 @@ class GhostLogic : StartableLogic
 
     void startNextMove()
     {
+        if (m_bossDie)
+            return;
+
         if (m_tween != null)
         {
             m_tween.Kill();
@@ -145,7 +157,7 @@ class GhostLogic : StartableLogic
         var pos = m_path[0];
         m_path.RemoveAt(0);
 
-        var dir = new Vector2(transform.position.x, transform.position.y) - new Vector2(pos.x, pos.y);
+        var dir = new Vector2(pos.x, pos.y) - new Vector2(transform.position.x, transform.position.y);
         // Up,      0
         // Down,    1
         // Left,    2
@@ -164,5 +176,10 @@ class GhostLogic : StartableLogic
         float d = dir.magnitude;
 
         m_tween = transform.DOMove(new Vector3(pos.x, pos.y, transform.position.z), 1 / m_speed * d).SetEase(Ease.Linear).OnComplete(startNextMove);
+    }
+
+    void onBossDie(BossDieEvent e)
+    {
+        m_bossDie = true;
     }
 }
