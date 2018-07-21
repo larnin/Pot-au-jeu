@@ -6,9 +6,14 @@ public abstract class StartableLogic : MonoBehaviour
     SubscriberList m_subscriberList = new SubscriberList();
 
     bool m_started = false;
+    bool m_haveAwake = false;
 
     private void Awake()
     {
+        if (m_haveAwake)
+            return;
+        m_haveAwake = true;
+
         m_subscriberList.Add(new Event<StartEvent>.Subscriber(onStartEvent));
         m_subscriberList.Subscribe();
 
@@ -23,6 +28,17 @@ public abstract class StartableLogic : MonoBehaviour
     }
 
     protected virtual void onStart() { }
+
+    private void OnEnable()
+    {
+        Awake();
+
+        if (!m_started)
+            return;
+        onEnable();
+    }
+
+    protected virtual void onEnable() { }
 
     private void OnDestroy()
     {
@@ -60,6 +76,8 @@ public abstract class StartableLogic : MonoBehaviour
     {
         m_started = true;
         onLateStart();
+        if(enabled)
+            onEnable();
     }
 
     protected virtual void onLateStart() { }

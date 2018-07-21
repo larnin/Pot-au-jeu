@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class RedGhostLogic : StartableLogic
+public class RedGhostLogic : BaseColoredGhostLogic
 {
     [SerializeField] float m_updateTime = 1;
 

@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using NRand;
 
-public class OrangeGhostLogic : StartableLogic
+public class OrangeGhostLogic : BaseColoredGhostLogic
 {
     [SerializeField] float m_updateTime = 3;
     [SerializeField] int m_radius = 10;

@@ -36,10 +36,11 @@ class GhostLogic : StartableLogic
 
     Tween m_tween;
     List<Position> m_path = new List<Position>();
+    Animator m_animator;
 
     protected override void onAwake()
     {
-        
+        m_animator = GetComponent<Animator>();
     }
 
     public bool haveFinishedPath()
@@ -144,7 +145,23 @@ class GhostLogic : StartableLogic
         var pos = m_path[0];
         m_path.RemoveAt(0);
 
-        float d = (new Vector2(transform.position.x, transform.position.y) - new Vector2(pos.x, pos.y)).magnitude;
+        var dir = new Vector2(transform.position.x, transform.position.y) - new Vector2(pos.x, pos.y);
+        // Up,      0
+        // Down,    1
+        // Left,    2
+        // Right    3
+        const string propertyName = "Direction";
+        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+        {
+            if (dir.x > 0)
+                m_animator.SetInteger(propertyName, 3);
+            else m_animator.SetInteger(propertyName, 2);
+        }
+        else if(dir.y > 0)
+            m_animator.SetInteger(propertyName, 1);
+        else m_animator.SetInteger(propertyName, 0);
+
+        float d = dir.magnitude;
 
         m_tween = transform.DOMove(new Vector3(pos.x, pos.y, transform.position.z), 1 / m_speed * d).SetEase(Ease.Linear).OnComplete(startNextMove);
     }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class PinkGhostLogic : StartableLogic
+public class PinkGhostLogic : BaseColoredGhostLogic
 {
     [SerializeField] float m_updateTime = 1;
     [SerializeField] int m_frontDistance = 5;

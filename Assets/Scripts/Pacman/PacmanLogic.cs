@@ -141,9 +141,9 @@ public class PacmanLogic : StartableLogic
         if (ghost == null)
             return;
 
-        if (ghost.isVulnerable())
+        if (ghost.isVulnerable() && !ghost.isEaten())
             ghost.eat();
-        else
+        if(!ghost.isEaten() && !ghost.isVulnerable())
         {
             Event<DieEvent>.Broadcast(new DieEvent());
         }
