@@ -51,7 +51,17 @@ public class PacmanLogic : StartableLogic
 
     public Vector2Int getDirection()
     {
-        switch(m_currentDirection)
+        return toVect(m_currentDirection);
+    }
+
+    public Vector2Int getWantedDirection()
+    {
+        return toVect(m_direction);
+    }
+
+    Vector2Int toVect(Direction d)
+    {
+        switch (d)
         {
             case Direction.Down:
                 return new Vector2Int(0, 1);
@@ -133,8 +143,7 @@ public class PacmanLogic : StartableLogic
             var tempDir = m_direction;
             m_direction = m_currentDirection;
             startNextMove();
-            if (m_tween != null)
-                m_direction = tempDir;
+            m_direction = tempDir;
             return;
         }
 

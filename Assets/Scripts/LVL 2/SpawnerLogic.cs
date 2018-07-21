@@ -14,6 +14,7 @@ public class SpawnerLogic : StartableLogic
     [SerializeField] float m_redProbability = 0.5f;
     [SerializeField] float m_spawnTime = 2;
     [SerializeField] float m_spawnDelay = 0.5f;
+    [SerializeField] float m_spawnLimit = 10;
     [SerializeField] float m_spawnHeight = 8;
     [SerializeField] float m_moveSpeed = 1;
     [SerializeField] List<RectInt> m_possiblePath; 
@@ -23,6 +24,8 @@ public class SpawnerLogic : StartableLogic
 
     bool m_direction = true;
     float m_centerPos;
+
+    int m_totalSpawnCount = 1;
 
     GameObject m_spawnedPink = null;
     GameObject m_spawnedBlue = null;
@@ -53,7 +56,11 @@ public class SpawnerLogic : StartableLogic
         if (m_spawnedBlue == null)
             objectToSpawn = m_blueBall;
 
-        bool toRed = new BernoulliDistribution(m_redProbability).Next(new StaticRandomGenerator<DefaultRandomGenerator>());
+        float redProbability = m_totalSpawnCount > m_spawnLimit ? m_redProbability : m_redProbability * ((float)m_totalSpawnCount / m_spawnLimit);
+        if (m_spawnedPink != null && m_spawnedGreen != null && m_spawnedBlue != null)
+            redProbability = m_redProbability;
+
+        bool toRed = new BernoulliDistribution(redProbability).Next(new StaticRandomGenerator<DefaultRandomGenerator>());
 
         if (objectToSpawn == m_redBall && !toRed)
         {
@@ -79,6 +86,8 @@ public class SpawnerLogic : StartableLogic
                 m_spawnedBlue = obj;
 
             m_timer = m_spawnTime;
+            m_totalSpawnCount++;
+
             DOVirtual.DelayedCall(m_spawnDelay, () => m_spawning = false);
         });
     }
