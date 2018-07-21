@@ -18,7 +18,7 @@ public class Matrix<T>
     }
 
     T m_defaultValue;
-    List<Bloc> m_values;
+    List<Bloc> m_values = new List<Bloc>();
 
     public Matrix(T defaultValue = default(T))
     {
