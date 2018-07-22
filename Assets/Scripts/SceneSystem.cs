@@ -10,8 +10,14 @@ public class SceneSystem
 {
     const string defaultSceneName = "Main";
 
+    static bool m_starting = false;
+
     public static void changeScene(string sceneName, bool instant = false, Action finishedCallback = null)
     {
+        if (m_starting)
+            return;
+        m_starting = true;
+
         if (!Application.CanStreamedLevelBeLoaded(sceneName))
         {
             Debug.LogError("Can't load scene " + sceneName + ". Back to main menu");
@@ -41,6 +47,7 @@ public class SceneSystem
         else
         {
             Event<ShowLoadingScreenEvent>.Broadcast(new ShowLoadingScreenEvent(false));
+            m_starting = false;
             if (finishedCallback != null)
                 finishedCallback();
         }

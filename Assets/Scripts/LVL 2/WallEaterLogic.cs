@@ -69,6 +69,7 @@ public class WallEaterLogic : MonoBehaviour
     void onDie()
     {
         m_animator.SetTrigger(dieTrigger);
+        Event<DieEvent>.Broadcast(new DieEvent());
     }
 
     void eatWalls()

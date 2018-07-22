@@ -41,10 +41,11 @@ public class PacmanLogic : StartableLogic
     {
         m_animator = GetComponent<Animator>();
         m_subscriberList.Add(new Event<BossDieEvent>.Subscriber(onBossDie));
+        m_subscriberList.Add(new Event<DieEvent>.Subscriber(onDie));
         m_subscriberList.Subscribe();
     }
 
-    private void OnDestroy()
+    protected override void onDestroy()
     {
         m_subscriberList.Unsubscribe();
     }
@@ -114,6 +115,9 @@ public class PacmanLogic : StartableLogic
 
     void startNextMove()
     {
+        if (this == null)
+            return;
+
         if (m_bossDied)
             return;
 
@@ -189,5 +193,10 @@ public class PacmanLogic : StartableLogic
     void onBossDie(BossDieEvent e)
     {
         m_bossDied = true;
+    }
+
+    void onDie(DieEvent e)
+    {
+        m_died = true;
     }
 }
