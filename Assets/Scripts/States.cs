@@ -22,7 +22,7 @@ public class States
     public int deaths { get; set; }
     public int plays { get; set; }
 
-    Dictionary<string, bool> m_finishedScenes;
+    Dictionary<string, bool> m_finishedScenes = new Dictionary<string, bool>();
     public void setFiniedScene(string name)
     {
         if(!isFinishedScene(name))
@@ -32,6 +32,11 @@ public class States
     public bool isFinishedScene(string name)
     {
         return m_finishedScenes.ContainsKey(name);
+    }
+
+    public int finishedSceneCount()
+    {
+        return m_finishedScenes.Count();
     }
 
     public void reset()

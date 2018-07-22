@@ -8,7 +8,9 @@ using DG.Tweening;
 
 public class MainLogic : MonoBehaviour
 {
-    [SerializeField] string lobbyScene = "Lobby";
+    [SerializeField] string m_lobbyScene = "Lobby";
+    [SerializeField] float m_duration = 2;
+    bool m_pressed = false;
 
     private void Awake()
     {
@@ -23,6 +25,16 @@ public class MainLogic : MonoBehaviour
 
     public void onStartPress()
     {
-        SceneSystem.changeScene(lobbyScene, true);
+        if (m_pressed)
+            return;
+
+        m_pressed = true;
+
+        foreach (var r in GetComponentsInChildren<Graphic>())
+        {
+            r.DOColor(new Color(r.color.r, r.color.g, r.color.b, 0), m_duration);
+        }
+
+        DOVirtual.DelayedCall(m_duration + 0.2f, () => SceneSystem.changeScene(m_lobbyScene, true));
     }
 }
