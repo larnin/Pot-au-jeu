@@ -6,7 +6,10 @@ public class SelectableManagerLogic : MonoBehaviour
 {
     const string horizontalAxis = "Horizontal";
     const string submitButton = "Submit";
-    
+
+    [SerializeField] AudioClip m_openArcadeClip;
+    [SerializeField] AudioClip m_openLinkClip;
+
     static List<SelectableLogic> m_selectables = new List<SelectableLogic>();
 
     static SelectableLogic m_selected;
@@ -77,37 +80,44 @@ public class SelectableManagerLogic : MonoBehaviour
 
     public void onQuitClick()
     {
+        Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_openLinkClip));
         Application.Quit();
     }
 
     public void onLvlClick(string sceneName)
     {
+        Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_openArcadeClip));
         States.instance.plays++;
         SceneSystem.changeScene(sceneName);
     }
 
     public void onClickPAJ()
     {
+        Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_openLinkClip));
         Application.OpenURL("https://itch.io/jam/pot-au-jeu");
     }
 
     public void onClickNico()
     {
+        Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_openLinkClip));
         Application.OpenURL("http://nicolas.laurent.re/");
     }
 
     public void onClickIxe()
     {
+        Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_openLinkClip));
         Application.OpenURL("https://www.twitch.tv/llxll");
     }
 
     public void onOpenScores()
     {
+        Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_openLinkClip));
         Event<ShowScoreWindowEvent>.Broadcast(new ShowScoreWindowEvent("Scores", "Not implemented yet", TextAlignment.Center, 15));
     }
 
     public void onOpenHowToPlay()
     {
+        Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_openLinkClip));
         Event<ShowScoreWindowEvent>.Broadcast(new ShowScoreWindowEvent("Comment jouer", "C'est tres simple,\nil vous suffis de tuer\nle boss de chaque borne\nd'arcade :)\n\nTouches fléchés \npour se déplacer", TextAlignment.Left, 15));
     }
 }

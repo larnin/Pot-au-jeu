@@ -23,6 +23,8 @@ public class SnakeLogic : StartableLogic
     [SerializeField] float m_explosionRadius = 1;
     [SerializeField] float m_explosionDelta = 0.2f;
     [SerializeField] int m_explosionFinalCount = 15;
+    [SerializeField] AudioClip m_bossExplosionClip;
+    [SerializeField] AudioClip m_bossEatPowerupClip;
 
     PacmanLogic m_pacman;
     Animator m_animator;
@@ -113,6 +115,7 @@ public class SnakeLogic : StartableLogic
     {
         if(collision.gameObject.GetComponent<SnakePowerupLogic>() != null)
         {
+            Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_bossEatPowerupClip));
             Destroy(collision.gameObject);
 
             for (int i = 0; i < m_sizeIncreasePowerUp; i++)
@@ -313,6 +316,8 @@ public class SnakeLogic : StartableLogic
         DOVirtual.DelayedCall(m_explosionTime, () =>
         {
             DOVirtual.DelayedCall(0.2f, () => gameObject.SetActive(false));
+
+            Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_bossExplosionClip));
 
             for (int i = 0; i < m_explosionFinalCount; i++)
             {

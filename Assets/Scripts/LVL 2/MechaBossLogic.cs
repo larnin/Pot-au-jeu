@@ -14,6 +14,7 @@ public class MechaBossLogic : StartableLogic
     [SerializeField] float m_explosionRadius = 1;
     [SerializeField] float m_explosionDelta = 0.2f;
     [SerializeField] int m_explosionFinalCount = 15;
+    [SerializeField] AudioClip m_bossExplosionClip;
 
     Vector2 m_originalPos;
     Animator m_animator;
@@ -54,6 +55,8 @@ public class MechaBossLogic : StartableLogic
         DOVirtual.DelayedCall(m_explosionTime, () =>
         {
             DOVirtual.DelayedCall(0.2f, () => gameObject.SetActive(false));
+
+            Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_bossExplosionClip));
             
             for (int i = 0; i < m_explosionFinalCount; i++)
             {

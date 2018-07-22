@@ -5,6 +5,7 @@ public class PowerupLogic : MonoBehaviour
 {
     [SerializeField] float m_popTime;
     [SerializeField] float m_showTime;
+    [SerializeField] AudioClip m_eatClip;
 
     float m_timer;
     SpriteRenderer m_render;
@@ -31,6 +32,7 @@ public class PowerupLogic : MonoBehaviour
 
     public void pickup()
     {
+        Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_eatClip));
         m_timer = 0;
     }
 

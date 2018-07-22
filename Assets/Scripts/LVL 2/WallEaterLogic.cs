@@ -7,6 +7,9 @@ public class WallEaterLogic : MonoBehaviour
     const string dieTrigger = "Die";
 
     [SerializeField] Tilemap m_map;
+    [SerializeField] AudioClip m_eatRightBallClip;
+    [SerializeField] AudioClip m_eatWrongBallClip;
+    [SerializeField] AudioClip m_eatWallClip;
 
     SpriteRenderer m_renderer;
     Animator m_animator;
@@ -52,6 +55,7 @@ public class WallEaterLogic : MonoBehaviour
             return;
         }
 
+        Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_eatRightBallClip));
         m_id = ball.id;
         m_color = ball.color;
         m_time = ball.effectTime;
@@ -68,6 +72,7 @@ public class WallEaterLogic : MonoBehaviour
 
     void onDie()
     {
+        Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_eatWrongBallClip));
         m_animator.SetTrigger(dieTrigger);
         Event<DieEvent>.Broadcast(new DieEvent());
     }
@@ -82,7 +87,10 @@ public class WallEaterLogic : MonoBehaviour
         if(tile != null)
         {
             if (tile.id == m_id)
+            {
+                Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_eatWallClip));
                 m_map.SetTile(new Vector3Int(x, y, 0), null);
+            }
         }
     }
 }

@@ -6,6 +6,8 @@ public class GhostStateLogic : MonoBehaviour
     const string vulnerableProperty = "IsVulnerable";
     const string eatenProperty = "IsEaten";
 
+    [SerializeField] AudioClip m_eatClip;
+
     SubscriberList m_subscriberList = new SubscriberList();
 
     float  m_vulnerabilityTime = 0;
@@ -58,6 +60,7 @@ public class GhostStateLogic : MonoBehaviour
 
     public void eat()
     {
+        Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_eatClip));
         m_eaten = true;
         m_animator.SetBool(eatenProperty, true);
         Event<MonsterEatenEvent>.Broadcast(new MonsterEatenEvent());

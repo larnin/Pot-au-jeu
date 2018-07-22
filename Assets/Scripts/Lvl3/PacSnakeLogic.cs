@@ -8,6 +8,8 @@ public class PacSnakeLogic : MonoBehaviour
 
     [SerializeField] float m_powerupDuration = 5;
     [SerializeField] float m_powerupSpeed = 8;
+    [SerializeField] AudioClip m_eatPowerupClip;
+    [SerializeField] AudioClip m_eatSnakeClip;
 
     float m_baseSpeed;
     PacmanLogic m_pacman;
@@ -38,6 +40,7 @@ public class PacSnakeLogic : MonoBehaviour
             return;
 
         m_pacman.speed = m_powerupSpeed;
+        Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_eatPowerupClip));
         Destroy(p.gameObject);
         DOVirtual.DelayedCall(m_powerupDuration, () => m_pacman.speed = m_baseSpeed);
     }
@@ -48,7 +51,10 @@ public class PacSnakeLogic : MonoBehaviour
             return;
 
         if (s.lastNode)
+        {
+            Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_eatSnakeClip));
             Destroy(s.gameObject);
+        }
         else onDie();
     }
 

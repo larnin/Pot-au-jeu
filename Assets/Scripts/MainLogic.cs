@@ -10,6 +10,7 @@ public class MainLogic : MonoBehaviour
 {
     [SerializeField] string m_lobbyScene = "Lobby";
     [SerializeField] float m_duration = 2;
+    [SerializeField] AudioClip m_startClip;
     bool m_pressed = false;
 
     private void Awake()
@@ -27,6 +28,8 @@ public class MainLogic : MonoBehaviour
     {
         if (m_pressed)
             return;
+
+        Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_startClip));
 
         m_pressed = true;
 

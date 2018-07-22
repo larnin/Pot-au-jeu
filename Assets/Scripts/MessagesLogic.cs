@@ -15,8 +15,12 @@ public class MessagesLogic : MonoBehaviour
     [SerializeField] float m_timeBeforeEndMessage = 1.0f;
     [SerializeField] float m_timeBeforeBackLobby = 3.0f;
     [SerializeField] string m_lobbyName = "Lobby";
+    [SerializeField] AudioClip m_startClip;
+    [SerializeField] AudioClip m_winClip;
+    [SerializeField] AudioClip m_looseClip;
 
     SubscriberList m_subscriberList = new SubscriberList();
+    bool m_dead = false;
 
     private void Awake()
     {
@@ -37,20 +41,37 @@ public class MessagesLogic : MonoBehaviour
 
     void onStart(StartEvent e)
     {
+        Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_startClip));
         m_startMessage.SetActive(true);
         DOVirtual.DelayedCall(m_startMessageTime, () => m_startMessage.SetActive(false));
     }
 
     void onDie(DieEvent e)
     {
-        DOVirtual.DelayedCall(m_timeBeforeEndMessage, () => m_dieMessage.SetActive(true));
+        if (m_dead)
+            return;
+        m_dead = true;
+
+        DOVirtual.DelayedCall(m_timeBeforeEndMessage, () =>
+        {
+            Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_looseClip));
+            m_dieMessage.SetActive(true);
+        });
         DOVirtual.DelayedCall(m_timeBeforeBackLobby, () => SceneSystem.changeScene(m_lobbyName));
         States.instance.deaths++;
     }
 
     void onBossDieEvent(BossDieEvent e)
     {
-        DOVirtual.DelayedCall(m_timeBeforeEndMessage, () => m_endWinMessage.SetActive(true));
+        if (m_dead)
+            return;
+        m_dead = true;
+
+        DOVirtual.DelayedCall(m_timeBeforeEndMessage, () =>
+        {
+            Event<PlaySoundEvent>.Broadcast(new PlaySoundEvent(m_winClip));
+            m_endWinMessage.SetActive(true);
+        });
         DOVirtual.DelayedCall(m_timeBeforeBackLobby, () => SceneSystem.changeScene(m_lobbyName));
 
         States.instance.setFiniedScene(SceneManager.GetActiveScene().name);
