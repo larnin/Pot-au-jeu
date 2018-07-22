@@ -892,8 +892,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c09d28c55c757f34f82086eeab0d1538, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_timeBeforeTimer: 0.1
-  m_timer: 0.1
+  m_timeBeforeTimer: 0.5
+  m_timer: 0.5
 --- !u!4 &544300856
 Transform:
   m_ObjectHideFlags: 0
@@ -2846,6 +2846,48 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!1001 &1444189435
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4727727222400226, guid: ef222d1012a80b044862ca6d550adea5, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4727727222400226, guid: ef222d1012a80b044862ca6d550adea5, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4727727222400226, guid: ef222d1012a80b044862ca6d550adea5, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4727727222400226, guid: ef222d1012a80b044862ca6d550adea5, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4727727222400226, guid: ef222d1012a80b044862ca6d550adea5, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4727727222400226, guid: ef222d1012a80b044862ca6d550adea5, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4727727222400226, guid: ef222d1012a80b044862ca6d550adea5, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4727727222400226, guid: ef222d1012a80b044862ca6d550adea5, type: 2}
+      propertyPath: m_RootOrder
+      value: 14
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: ef222d1012a80b044862ca6d550adea5, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &1620718987
 GameObject:
   m_ObjectHideFlags: 0
