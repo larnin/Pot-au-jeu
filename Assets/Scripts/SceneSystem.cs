@@ -8,9 +8,9 @@ using UnityEngine.SceneManagement;
 
 public class SceneSystem
 {
-    const string defaultSceneName = "MainMenu";
+    const string defaultSceneName = "Main";
 
-    public static void changeScene(string sceneName, Action finishedCallback = null)
+    public static void changeScene(string sceneName, bool instant = false, Action finishedCallback = null)
     {
         if (!Application.CanStreamedLevelBeLoaded(sceneName))
         {
@@ -26,6 +26,12 @@ public class SceneSystem
             var operation = SceneManager.LoadSceneAsync(sceneName);
             execChangeScene(operation, finishedCallback);
         });
+
+        if(instant)
+        {
+            var operation = SceneManager.LoadSceneAsync(sceneName);
+            execChangeScene(operation, finishedCallback);
+        }
     }
 
     static void execChangeScene(AsyncOperation operation, Action finishedCallback)

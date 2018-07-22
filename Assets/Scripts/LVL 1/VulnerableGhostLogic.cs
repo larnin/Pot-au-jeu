@@ -32,7 +32,7 @@ public class VulnerableGhostLogic : StartableLogic
         int x = Mathf.RoundToInt(m_pacman.transform.position.x);
         int y = Mathf.RoundToInt(m_pacman.transform.position.y);
 
-        var dir = new Vector2(transform.position.x, transform.position.y) - new Vector2(x, y);
+        var dir = (new Vector2(transform.position.x, transform.position.y) - new Vector2(x, y)) * m_fleeDIstance;
 
         int newX = Mathf.RoundToInt(transform.position.x + dir.x);
         int newY = Mathf.RoundToInt(transform.position.y + dir.y);
