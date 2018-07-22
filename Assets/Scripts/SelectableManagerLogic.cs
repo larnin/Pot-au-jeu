@@ -100,4 +100,14 @@ public class SelectableManagerLogic : MonoBehaviour
     {
         Application.OpenURL("https://www.twitch.tv/llxll");
     }
+
+    public void onOpenScores()
+    {
+        Event<ShowScoreWindowEvent>.Broadcast(new ShowScoreWindowEvent("Scores", "Not implemented yet", TextAlignment.Center, 15));
+    }
+
+    public void onOpenHowToPlay()
+    {
+        Event<ShowScoreWindowEvent>.Broadcast(new ShowScoreWindowEvent("Comment jouer", "C'est tres simple,\nil vous suffis de tuer\nle boss de chaque borne\nd'arcade :)\n\nTouches fléchés \npour se déplacer", TextAlignment.Left, 15));
+    }
 }

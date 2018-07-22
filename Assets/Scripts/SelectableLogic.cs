@@ -72,6 +72,8 @@ public class SelectableLogic : MonoBehaviour
 
     public void click()
     {
+        if (ScoreWindowLogic.isOpen)
+            return;
         if (m_event != null)
             m_event.Invoke();
     }
