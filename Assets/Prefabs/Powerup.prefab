@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212887384453321392}
   - component: {fileID: 58659862311798792}
   - component: {fileID: 95503243941718946}
-  - component: {fileID: 114647967037788730}
+  - component: {fileID: 114087478366579702}
   m_Layer: 0
   m_Name: Powerup
   m_TagString: Untagged
@@ -52,7 +52,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -76,7 +76,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &114647967037788730
+--- !u!114 &114087478366579702
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -84,11 +84,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1415715437692962}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61c34ef444f58f34aae0faccda86ad13, type: 3}
+  m_Script: {fileID: 11500000, guid: 89aa0c4cc0a790a4b8f456671e569433, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_popTime: 0
-  m_showTime: 0
 --- !u!212 &212887384453321392
 SpriteRenderer:
   m_ObjectHideFlags: 1

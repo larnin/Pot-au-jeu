@@ -1773,6 +1773,7 @@ GameObject:
   - component: {fileID: 1862185843}
   - component: {fileID: 1862185842}
   - component: {fileID: 1862185846}
+  - component: {fileID: 1862185847}
   m_Layer: 0
   m_Name: Snake
   m_TagString: Untagged
@@ -1794,12 +1795,13 @@ MonoBehaviour:
   m_pacmanRadius: 5
   m_speed: 3
   m_walkableIDs: 00000000
-  m_updateTime: 1
   m_randomRange: 5
-  m_timeBeforeSendNext: 0.7
-  m_initialLenght: 5
+  m_nodeDeltaPos: 15
+  m_initialLenght: 6
   m_nodePrefab: {fileID: 1985376105488050, guid: b6298714cf801f448b3fafa3ea85564d,
     type: 2}
+  m_sizeIncreasePowerUp: 2
+  m_dheight: 0.01
 --- !u!58 &1862185843
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1809,7 +1811,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -1891,6 +1893,26 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!50 &1862185847
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1862185841}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!1 &1994547181
 GameObject:
   m_ObjectHideFlags: 0

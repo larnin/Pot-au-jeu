@@ -10,19 +10,20 @@ public class SnakeLogic : StartableLogic
     [SerializeField] float m_pacmanRadius = 5;
     [SerializeField] float m_speed = 3;
     [SerializeField] List<int> m_walkableIDs;
-    [SerializeField] float m_updateTime = 1.0f;
     [SerializeField] float m_randomRange = 5;
-    [SerializeField] float m_timeBeforeSendNext = 0.7f;
+    [SerializeField] int m_nodeDeltaPos = 3;
     [SerializeField] int m_initialLenght = 5;
     [SerializeField] GameObject m_nodePrefab;
+    [SerializeField] int m_sizeIncreasePowerUp = 2;
+    [SerializeField] float m_dheight = 0.01f;
 
     PacmanLogic m_pacman;
-    Tween m_tween;
     Animator m_animator;
     List<Position> m_path = new List<Position>();
     List<SnakeNodeLogic> m_nodes = new List<SnakeNodeLogic>();
     bool m_bossDie = false;
-    float m_time = 0;
+
+    List<Vector3> m_positions = new List<Vector3>();
 
     class Position
     {
@@ -50,10 +51,17 @@ public class SnakeLogic : StartableLogic
 
     protected override void onAwake()
     {
+        for (int i = 0; i < m_nodeDeltaPos; i++)
+            m_positions.Add(transform.position);
         m_pacman = FindObjectOfType<PacmanLogic>();
         m_animator = GetComponent<Animator>();
         for (int i = 0; i < m_initialLenght; i++)
             spawnNode();
+    }
+
+    protected override void onLateStart()
+    {
+        startNextMove();
     }
 
     public bool haveNode(int x, int y)
@@ -62,34 +70,40 @@ public class SnakeLogic : StartableLogic
         {
             var i = Mathf.RoundToInt(n.transform.position.x);
             var j = Mathf.RoundToInt(n.transform.position.y);
-            if (x == i || y == j)
+            
+            if (x == i && y == j)
                 return true;
         }
         return false;
     }
 
-    protected override void onUpdate()
+    protected override void onFixedUpdate()
     {
-        m_time -= Time.deltaTime;
-        if(m_time <= 0)
-        {
-            m_time = m_updateTime;
+        for (int i = m_positions.Count - 1; i > 0; i--)
+            m_positions[i] = m_positions[i - 1];
+        m_positions[0] = transform.position;
 
-            if ((transform.position - m_pacman.transform.position).magnitude < m_pacmanRadius)
-                setTarget(Mathf.RoundToInt(m_pacman.transform.position.x), Mathf.RoundToInt(m_pacman.transform.position.y));
-            else if (SnakePowerupPopulatorLogic.powerup != null)
-                setTarget(Mathf.RoundToInt(SnakePowerupPopulatorLogic.powerup.transform.position.x), Mathf.RoundToInt(SnakePowerupPopulatorLogic.powerup.transform.position.y));
-            else
-            {
-                var target = new UniformVector2SquareDistribution(m_randomRange).Next(new StaticRandomGenerator<DefaultRandomGenerator>());
-                setTarget(Mathf.RoundToInt(transform.position.x + target.x), Mathf.RoundToInt(transform.position.y + target.y));
-            }
-        }
+        for(int i = 0; i < m_nodes.Count; i++)
+            m_nodes[i].transform.position = m_positions[(i + 1) * m_nodeDeltaPos] + new Vector3(0, 0, m_dheight * i);
     }
 
     public void onNodeKilled(SnakeNodeLogic node)
     {
         m_nodes.Remove(node);
+
+        for (int i = 0; i < m_nodeDeltaPos; i++)
+            m_positions.RemoveAt(m_positions.Count - 1);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.GetComponent<SnakePowerupLogic>() != null)
+        {
+            Destroy(collision.gameObject);
+
+            for (int i = 0; i < m_sizeIncreasePowerUp; i++)
+                spawnNode();
+        }
     }
 
     void spawnNode()
@@ -100,12 +114,14 @@ public class SnakeLogic : StartableLogic
         {
             var lastNode = m_nodes[m_nodes.Count - 1];
             obj.transform.position = lastNode.transform.position;
-            lastNode.nextNode = node;
-            node.previousNode = lastNode;
         }
         else obj.transform.position = transform.position;
+        node.head = this;
 
         m_nodes.Add(node);
+
+        for (int i = 0; i < m_nodeDeltaPos; i++)
+            m_positions.Add(m_positions[m_positions.Count - 1]);
     }
 
     void setTarget(int x, int y, bool ignoreNodes = false)
@@ -194,9 +210,6 @@ public class SnakeLogic : StartableLogic
             setTarget(x, y, true);
             return;
         }
-
-        if (m_tween == null || m_tween.IsComplete() || !m_tween.IsPlaying() || !m_tween.IsActive())
-            startNextMove();
     }
 
     void startNextMove()
@@ -204,14 +217,15 @@ public class SnakeLogic : StartableLogic
         if (m_bossDie)
             return;
 
-        if (m_tween != null)
-        {
-            m_tween.Kill();
-            m_tween = null;
-        }
-
         if (m_path.Count == 0)
-            return;
+        {
+            execIA();
+            if(m_path.Count == 0)
+            {
+                DOVirtual.DelayedCall(0.1f, startNextMove);
+                return;
+            }
+        }
 
         var pos = m_path[0];
         m_path.RemoveAt(0);
@@ -233,14 +247,29 @@ public class SnakeLogic : StartableLogic
         else m_animator.SetInteger(propertyName, 0);
 
         float d = dir.magnitude;
-
-        m_tween = transform.DOMove(new Vector3(pos.x, pos.y, transform.position.z), 1 / m_speed * d).SetEase(Ease.Linear).OnComplete(startNextMove);
-        DOVirtual.DelayedCall(1 / m_speed * d * m_timeBeforeSendNext, () =>
+        if (d < 0.1f)
         {
-            if(m_nodes.Count() > 0)
-            {
-                m_nodes[0].setTarget(new Vector3(pos.x, pos.y, transform.position.z), m_speed, 1 / m_speed * d * m_timeBeforeSendNext);
-            }
+            startNextMove();
+            return;
+        }
+
+        transform.DOMove(new Vector3(pos.x, pos.y, transform.position.z), 1 / m_speed * d).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            startNextMove();
         });
+        
+    }
+
+    void execIA()
+    {
+        if ((new Vector2(transform.position.x, transform.position.y) - new Vector2(m_pacman.transform.position.x, m_pacman.transform.position.y)).magnitude<m_pacmanRadius)
+            setTarget(Mathf.RoundToInt(m_pacman.transform.position.x), Mathf.RoundToInt(m_pacman.transform.position.y));
+        else if (SnakePowerupPopulatorLogic.powerup != null)
+            setTarget(Mathf.RoundToInt(SnakePowerupPopulatorLogic.powerup.transform.position.x), Mathf.RoundToInt(SnakePowerupPopulatorLogic.powerup.transform.position.y));
+        else
+        {
+            var target = new UniformVector2CircleSurfaceDistribution(m_randomRange).Next(new StaticRandomGenerator<DefaultRandomGenerator>());
+            setTarget(Mathf.RoundToInt(transform.position.x + target.x), Mathf.RoundToInt(transform.position.y + target.y));
+        }
     }
 }

@@ -98,6 +98,6 @@ public class SelectableManagerLogic : MonoBehaviour
 
     public void onClickIxe()
     {
-
+        Application.OpenURL("https://www.twitch.tv/llxll");
     }
 }
