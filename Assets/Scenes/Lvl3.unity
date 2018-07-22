@@ -154,7 +154,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1048181258960324, guid: ef222d1012a80b044862ca6d550adea5, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ef222d1012a80b044862ca6d550adea5, type: 2}
@@ -1802,6 +1802,12 @@ MonoBehaviour:
     type: 2}
   m_sizeIncreasePowerUp: 2
   m_dheight: 0.01
+  m_explosionPrefab: {fileID: 1773409584258274, guid: 124a0e8804f713b408c3ea050e97b920,
+    type: 2}
+  m_explosionTime: 3
+  m_explosionRadius: 1
+  m_explosionDelta: 0.2
+  m_explosionFinalCount: 15
 --- !u!58 &1862185843
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1869,7 +1875,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1862185841}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 7, z: -10}
+  m_LocalPosition: {x: 0, y: 7, z: -1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -5758,6 +5764,7 @@ GameObject:
   - component: {fileID: 2146120822}
   - component: {fileID: 2146120821}
   - component: {fileID: 2146120823}
+  - component: {fileID: 2146120824}
   m_Layer: 0
   m_Name: Pacman
   m_TagString: Untagged
@@ -5831,7 +5838,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2146120817}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -8, z: -0.5}
+  m_LocalPosition: {x: 0, y: -8, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -5890,3 +5897,16 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &2146120824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2146120817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8e7848992d094d468cb956e547bc81c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_powerupDuration: 5
+  m_powerupSpeed: 8

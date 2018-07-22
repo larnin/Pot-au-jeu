@@ -26,6 +26,12 @@ public class PacmanLogic : StartableLogic
     [SerializeField] List<int> m_walkableIDs;
     [SerializeField] float m_powerupTimeEffect = 5;
 
+    public float speed
+    {
+        get { return m_speed; }
+        set { m_speed = value; }
+    }
+
     Tween m_tween = null;
     Direction m_direction = Direction.None;
     Direction m_currentDirection = Direction.None;

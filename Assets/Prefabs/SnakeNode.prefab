@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 212937497436917098}
   - component: {fileID: 58811749841378018}
   - component: {fileID: 114706493379698348}
+  - component: {fileID: 95649196999775742}
   m_Layer: 0
   m_Name: SnakeNode
   m_TagString: Untagged
@@ -57,6 +58,24 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.4375
+--- !u!95 &95649196999775742
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1985376105488050}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0075fcc6e84b7b84ebfe99f74500fe22, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &114706493379698348
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -68,7 +87,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d88173c313df5ad44ade89164d902ae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_dheight: 0.01
 --- !u!212 &212937497436917098
 SpriteRenderer:
   m_ObjectHideFlags: 1

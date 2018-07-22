@@ -7,6 +7,8 @@ using NRand;
 
 public class SnakeLogic : StartableLogic
 {
+    const string dieTrigger = "Die";
+
     [SerializeField] float m_pacmanRadius = 5;
     [SerializeField] float m_speed = 3;
     [SerializeField] List<int> m_walkableIDs;
@@ -16,6 +18,11 @@ public class SnakeLogic : StartableLogic
     [SerializeField] GameObject m_nodePrefab;
     [SerializeField] int m_sizeIncreasePowerUp = 2;
     [SerializeField] float m_dheight = 0.01f;
+    [SerializeField] GameObject m_explosionPrefab;
+    [SerializeField] float m_explosionTime = 3;
+    [SerializeField] float m_explosionRadius = 1;
+    [SerializeField] float m_explosionDelta = 0.2f;
+    [SerializeField] int m_explosionFinalCount = 15;
 
     PacmanLogic m_pacman;
     Animator m_animator;
@@ -49,10 +56,14 @@ public class SnakeLogic : StartableLogic
         public int y;
     }
 
+    public bool isLastNode()
+    {
+        return m_nodes.Count == 0;
+    }
+
     protected override void onAwake()
     {
-        for (int i = 0; i < m_nodeDeltaPos; i++)
-            m_positions.Add(transform.position);
+        m_positions.Add(transform.position);
         m_pacman = FindObjectOfType<PacmanLogic>();
         m_animator = GetComponent<Animator>();
         for (int i = 0; i < m_initialLenght; i++)
@@ -93,6 +104,9 @@ public class SnakeLogic : StartableLogic
 
         for (int i = 0; i < m_nodeDeltaPos; i++)
             m_positions.RemoveAt(m_positions.Count - 1);
+
+        if (m_nodes.Count > 0)
+            m_nodes[m_nodes.Count - 1].lastNode = true;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -108,6 +122,9 @@ public class SnakeLogic : StartableLogic
 
     void spawnNode()
     {
+        if (m_nodes.Count > 0)
+            m_nodes[m_nodes.Count - 1].lastNode = false;
+
         GameObject obj = Instantiate(m_nodePrefab);
         var node = obj.GetComponent<SnakeNodeLogic>();
         if(m_nodes.Count > 0)
@@ -117,6 +134,7 @@ public class SnakeLogic : StartableLogic
         }
         else obj.transform.position = transform.position;
         node.head = this;
+        node.lastNode = true;
 
         m_nodes.Add(node);
 
@@ -255,7 +273,8 @@ public class SnakeLogic : StartableLogic
 
         transform.DOMove(new Vector3(pos.x, pos.y, transform.position.z), 1 / m_speed * d).SetEase(Ease.Linear).OnComplete(() =>
         {
-            startNextMove();
+            if(this != null)
+                startNextMove();
         });
         
     }
@@ -271,5 +290,36 @@ public class SnakeLogic : StartableLogic
             var target = new UniformVector2CircleSurfaceDistribution(m_randomRange).Next(new StaticRandomGenerator<DefaultRandomGenerator>());
             setTarget(Mathf.RoundToInt(transform.position.x + target.x), Mathf.RoundToInt(transform.position.y + target.y));
         }
+    }
+
+    public void kill()
+    {
+        m_animator.SetTrigger(dieTrigger);
+
+        Event<BossDieEvent>.Broadcast(new BossDieEvent());
+
+        var rand = new StaticRandomGenerator<DefaultRandomGenerator>();
+        var d = new UniformFloatDistribution(-m_explosionRadius, m_explosionRadius);
+
+        for (float i = 0; i <= m_explosionTime; i += m_explosionDelta)
+        {
+            DOVirtual.DelayedCall(i, () =>
+            {
+                var pos = transform.position + new Vector3(d.Next(rand), d.Next(rand), -0.5f);
+                Instantiate(m_explosionPrefab, pos, Quaternion.identity);
+            });
+        }
+
+        DOVirtual.DelayedCall(m_explosionTime, () =>
+        {
+            DOVirtual.DelayedCall(0.2f, () => gameObject.SetActive(false));
+
+            for (int i = 0; i < m_explosionFinalCount; i++)
+            {
+                var pos = transform.position + new Vector3(d.Next(rand), d.Next(rand), -0.5f);
+                Instantiate(m_explosionPrefab, pos, Quaternion.identity);
+            }
+        });
+
     }
 }
